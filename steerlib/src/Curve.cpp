@@ -77,6 +77,10 @@ void Curve::sortControlPoints()
 	// Use the controlPointComparitor function to sort the vector<controlPoints>
 	// The controlPointComparitor function sorts it by time
 	std::sort(controlPoints.begin(),controlPoints.end(),controlPointComparitor);
+	std::cout << "Sorted Control Points:" << std::endl;
+	for(int i = 0;i < controlPoints.size();i++){
+		std::cout << "Sorted Point " << i << " Time: " << controlPoints[i].time << std::endl;
+	}
 
 	return;
 
@@ -133,17 +137,15 @@ bool Curve::checkRobust()
 // of the point that's at t=40 (check for case when time is AT a control point)
 bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function findTimeInterval is not implemented!" << std::endl;
-		flag = true;
+	// If the controlPoint time is greater than the current time, this is the next point
+	for(int i = 0;i < controlPoints.size();i++){
+		if(controlPoints[i].time >= time){
+			nextPoint = i;
+			return true;
+		}
 	}
-	//=========================================================================
 
-
-	return true;
+	return false;
 }
 
 // Implement Hermite curve
