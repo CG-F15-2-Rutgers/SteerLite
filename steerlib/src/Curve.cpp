@@ -77,10 +77,6 @@ void Curve::sortControlPoints()
 	// Use the controlPointComparitor function to sort the vector<controlPoints>
 	// The controlPointComparitor function sorts it by time
 	std::sort(controlPoints.begin(),controlPoints.end(),controlPointComparitor);
-	std::cout << "Sorted Control Points:" << std::endl;
-	for(int i = 0;i < controlPoints.size();i++){
-		std::cout << "Sorted Point " << i << " Time: " << controlPoints[i].time << std::endl;
-	}
 
 	return;
 
@@ -119,17 +115,11 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 // Check for size > 2
 bool Curve::checkRobust()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function checkRobust is not implemented!" << std::endl;
-		flag = true;
+	if(controlPoints.size() > 2){
+		return true;
 	}
-	//=========================================================================
 
-
-	return true;
+	return false;
 }
 
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
