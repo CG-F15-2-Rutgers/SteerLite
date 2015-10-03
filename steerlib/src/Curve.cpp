@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <iostream>
 #include <util/Geometry.h>
 #include <util/Curve.h>
 #include <util/Color.h>
@@ -57,24 +58,28 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 	// Robustness: make sure there is at least two control point: start and end points
 
 	// Move on the curve from t=0 to t=finalPoint, using window as step size, and linearly interpolate the curve points
-	
+
 	return;
 #endif
+}
+
+bool controlPointComparitor (CurvePoint p1, CurvePoint p2) {
+	return (p1.time<p2.time);
 }
 
 // Sort controlPoints vector in ascending order: min-first
 void Curve::sortControlPoints()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function sortControlPoints is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
+	//superclass: CurvePoint - Point, Vector, float time
+	//subclass: Point - float x, y, z
+	//subclass: Vector - float x, y, z
+
+	// Use the controlPointComparitor function to sort the vector<controlPoints>
+	// The controlPointComparitor function sorts it by time
+	std::sort(controlPoints.begin(),controlPoints.end(),controlPointComparitor);
 
 	return;
+
 }
 
 // Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
@@ -107,6 +112,7 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 }
 
 // Check Roboustness
+// Check for size > 2
 bool Curve::checkRobust()
 {
 	//================DELETE THIS PART AND THEN START CODING===================
@@ -123,6 +129,8 @@ bool Curve::checkRobust()
 }
 
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
+// Calculate the next index of the control point (nextPoint) (i.e. if the next point is at t=40 and time=30, return nextPoint as the index
+// of the point that's at t=40 (check for case when time is AT a control point)
 bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
 	//================DELETE THIS PART AND THEN START CODING===================
@@ -179,8 +187,22 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 
 	// Calculate time interval, and normal time required for later curve calculations
 
+	// nextPoint is the index of the vector<controlPoints>
+
 	// Calculate position at t = time on Catmull-Rom curve
-	
+
 	// Return result
 	return newPosition;
 }
+
+
+
+
+
+
+
+
+
+
+
+
