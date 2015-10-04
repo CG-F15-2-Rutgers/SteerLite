@@ -145,13 +145,35 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
  	// ** New Code **//
 
-	Point P1, P2;
-	Vector R1, R2;
+	Point P1, P2, R1, R2;
 
-	P1 = (controlPoints[nextPoint-1]).position;
-	P2 = (controlPoints[nextPoint]).position;
-	R1 = (controlPoints[nextPoint-1]).tangent;
-	R2 = (controlPoints[nextPoint]).tangent;
+	P1 = (controlPoints[nextPoint-1]).position; // Point P1
+	P2 = (controlPoints[nextPoint]).position; // Point P2
+
+	// If nextPoint is the second control point (it can't ever be the first), set P0 = P1 (phantom control point)
+	if(nextPoint == 1){
+		float R1x = (controlPoints[nextPoint]).position.x - (controlPoints[nextPoint-1]).position.x; // Tangent @ P1 = R1 = P2 - P1
+		float R1y = (controlPoints[nextPoint]).position.y - (controlPoints[nextPoint-1]).position.y; // Tangent @ P1 = R1 = P2 - P1
+		float R1z = (controlPoints[nextPoint]).position.z - (controlPoints[nextPoint-1]).position.z; // Tangent @ P1 = R1 = P2 - P1
+		R1 = Point(R1x,R1y,R1z);
+	} else {
+		float R1x = (controlPoints[nextPoint]).position.x - (controlPoints[nextPoint-2]).position.x; // Tangent @ P1 = R1 = P2 - P0
+		float R1y = (controlPoints[nextPoint]).position.y - (controlPoints[nextPoint-2]).position.y; // Tangent @ P1 = R1 = P2 - P0
+		float R1z = (controlPoints[nextPoint]).position.z - (controlPoints[nextPoint-2]).position.z; // Tangent @ P1 = R1 = P2 - P0
+		R1 = Point(R1x,R1y,R1z);
+	}
+	// If nextPoint is the end point, set P3 = P2 (phantom control point)
+	if(nextPoint == (controlPoints.size()-1)){
+		float R2x = (controlPoints[nextPoint]).position.x - (controlPoints[nextPoint-1]).position.x; // Tangent @ P2 = R2 = P2 - P1
+		float R2y = (controlPoints[nextPoint]).position.y - (controlPoints[nextPoint-1]).position.y; // Tangent @ P2 = R2 = P2 - P1
+		float R2z = (controlPoints[nextPoint]).position.z - (controlPoints[nextPoint-1]).position.z; // Tangent @ P2 = R2 = P2 - P1
+		R2 = Point(R2x,R2y,R2z);
+	} else {
+		float R2x = (controlPoints[nextPoint+1]).position.x - (controlPoints[nextPoint-1]).position.x; // Tangent @ P2 = R2 = P3 - P1
+		float R2y = (controlPoints[nextPoint+1]).position.y - (controlPoints[nextPoint-1]).position.y; // Tangent @ P2 = R2 = P3 - P1
+		float R2z = (controlPoints[nextPoint+1]).position.z - (controlPoints[nextPoint-1]).position.z; // Tangent @ P2 = R2 = P3 - P1
+		R2 = Point(R2x,R2y,R2z);
+	}
 	
 	float scaledTime = (time-controlPoints[nextPoint-1].time)/(controlPoints[nextPoint].time-controlPoints[nextPoint-1].time);
  	
@@ -165,6 +187,10 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	float z = H0*P1.z + H1*P2.z + H2*R1.z + H3*R2.z;
 	
 	std::cout << x << "," << y << "," << z << "," << std::endl;
+	//std::cout << "Next point: " << nextPoint << std::endl;
+	//std::cout << "Next point time: " << controlPoints[nextPoint].time << std::endl;
+	//std::cout << "Current time: " << time << std::endl;
+	//std::cout << "Scaled time: " << scaledTime << std::endl;
 	return Point(x,y,z);
 	
 	// ** End of New Code ** //
