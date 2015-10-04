@@ -143,25 +143,33 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 // Implement Hermite curve
 Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
-	Point newPosition;
-	float normalTime, intervalTime;
+ 	// ** New Code **//
 
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function useHermiteCurve is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
+	Point P1, P2;
+	Vector R1, R2;
+
+	P1 = (controlPoints[nextPoint-1]).position;
+	P2 = (controlPoints[nextPoint]).position;
+	R1 = (controlPoints[nextPoint-1]).tangent;
+	R2 = (controlPoints[nextPoint]).tangent;
+	
+	float scaledTime = (time-controlPoints[nextPoint-1].time)/(controlPoints[nextPoint].time-controlPoints[nextPoint-1].time);
+ 	
+	float H0 = 2*(pow(scaledTime,3)) - 3*(pow(scaledTime,2)) + 1;
+ 	float H1 = -2*(pow(scaledTime,3)) + 3*(pow(scaledTime,2));
+ 	float H2 = pow(scaledTime,3) - 2*(pow(scaledTime,2)) + scaledTime;
+ 	float H3 = pow(scaledTime,3) - pow(scaledTime,2);
+
+	float x = H0*P1.x + H1*P2.x + H2*R1.x + H3*R2.x;
+	float y = H0*P1.y + H1*P2.y + H2*R1.y + H3*R2.y;
+	float z = H0*P1.z + H1*P2.z + H2*R1.z + H3*R2.z;
+	
+	std::cout << x << "," << y << "," << z << "," << std::endl;
+	return Point(x,y,z);
+	
+	// ** End of New Code ** //
 
 
-	// Calculate time interval, and normal time required for later curve calculations
-
-	// Calculate position at t = time on Hermite curve
-
-	// Return result
-	return newPosition;
 }
 
 // Implement Catmull-Rom curve
