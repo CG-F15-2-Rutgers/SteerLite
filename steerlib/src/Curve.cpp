@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <math.h>
 #include <util/Geometry.h>
 #include <util/Curve.h>
 #include <util/Color.h>
@@ -165,26 +167,52 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 // Implement Catmull-Rom curve
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
-	Point newPosition;
+	/* Theory:
+	
+	P0 = Control point before t = 0
+	P1 = Control point at t = 0
+	P2 = Control point at t = 1
+	P3 = Control point after t = 1
+	scaledTime = Time must be scaled from 0 to 1 by making it a fraction with the nextPoint's arrival time. The
+		last point must be subtracted from the top and bottom to allow it to connect the segments properly
+	x, y, z = Values generated from the Catmull-Rom Cubic Spline equation
 
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function useCatmullCurve is not implemented!" << std::endl;
-		flag = true;
+	*/
+
+	Point P0, P1, P2, P3;
+
+	// If nextPoint is the second control point (it can't ever be the first), set P0 and P1 to that point (phantom control point)
+	if(nextPoint == 1){
+		P0 = (controlPoints[nextPoint-1]).position;
+		P1 = P0;
+	} else {
+		P0 = (controlPoints[nextPoint-2]).position;
+		P1 = (controlPoints[nextPoint-1]).position;
 	}
-	//=========================================================================
+	// If nextPoint is the end point, set P2 and P3 to that point (phantom control point)
+	if(nextPoint == (controlPoints.size()-1)){
+		P2 = (controlPoints[nextPoint]).position;
+		P3 = P2;
+	} else {
+		P2 = (controlPoints[nextPoint]).position;
+		P3 = (controlPoints[nextPoint+1]).position;
+	}
 
+	// Scale the time from 0 to 1
+	float scaledTime = (time-controlPoints[nextPoint-1].time)/(controlPoints[nextPoint].time-controlPoints[nextPoint-1].time);
 
-	// Calculate time interval, and normal time required for later curve calculations
+	// Calculate new x value
+	float x = 0.5*((2*P1.x)+(-P0.x+P2.x)*scaledTime+(2*P0.x-5*P1.x+4*P2.x-P3.x)*pow(scaledTime,2)+(-P0.x+3*P1.x-3*P2.x+P3.x)*pow(scaledTime,3));
+	// Calculate new y value
+	float y = 0.5*((2*P1.y)+(-P0.y+P2.y)*scaledTime+(2*P0.y-5*P1.y+4*P2.y-P3.y)*pow(scaledTime,2)+(-P0.y+3*P1.y-3*P2.y+P3.y)*pow(scaledTime,3));
+	// Calculate new z value
+	float z = 0.5*((2*P1.z)+(-P0.z+P2.z)*scaledTime+(2*P0.z-5*P1.z+4*P2.z-P3.z)*pow(scaledTime,2)+(-P0.z+3*P1.z-3*P2.z+P3.z)*pow(scaledTime,3));
 
-	// nextPoint is the index of the vector<controlPoints>
+	//Print x, y, z values (good for matlab plotting to visualize the curve)
+	//std::cout << x << "," << y << "," << z << "," << std::endl;
 
-	// Calculate position at t = time on Catmull-Rom curve
-
-	// Return result
-	return newPosition;
+	// Compile new x, y and z values into a point and return
+	return Point(x,y,z);
 }
 
 
