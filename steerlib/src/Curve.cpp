@@ -48,20 +48,26 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 {
 #ifdef ENABLE_GUI
 
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function drawCurve is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
-
 	// Robustness: make sure there is at least two control point: start and end points
+	if(!checkRobust()){
+		return;
+	}
 
 	// Move on the curve from t=0 to t=finalPoint, using window as step size, and linearly interpolate the curve points
+	Point nextPoint;
+	Point lastPoint = controlPoints[0].position;
+
+	float time = 0.0;
+
+	DrawLib::glColor(curveColor);
+	while(calculatePoint(nextPoint,time)){
+		DrawLib::drawLine(lastPoint,nextPoint);
+		lastPoint = nextPoint;
+		time = time + 0.01*(float)window;
+	}
 
 	return;
+
 #endif
 }
 
@@ -131,7 +137,7 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
 	// If the controlPoint time is greater than the current time, this is the next point
 	for(int i = 0;i < controlPoints.size();i++){
-		if(controlPoints[i].time >= time){
+		if(controlPoints[i].time > time){
 			nextPoint = i;
 			return true;
 		}
@@ -143,8 +149,6 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 // Implement Hermite curve
 Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
- 	// ** New Code **//
-
 	Point P1, P2, R1, R2;
 
 	P1 = (controlPoints[nextPoint-1]).position; // Point P1
@@ -174,9 +178,9 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 		float R2z = (controlPoints[nextPoint+1]).position.z - (controlPoints[nextPoint-1]).position.z; // Tangent @ P2 = R2 = P3 - P1
 		R2 = Point(R2x,R2y,R2z);
 	}
-	
+
 	float scaledTime = (time-controlPoints[nextPoint-1].time)/(controlPoints[nextPoint].time-controlPoints[nextPoint-1].time);
- 	
+
 	float H0 = 2*(pow(scaledTime,3)) - 3*(pow(scaledTime,2)) + 1;
  	float H1 = -2*(pow(scaledTime,3)) + 3*(pow(scaledTime,2));
  	float H2 = pow(scaledTime,3) - 2*(pow(scaledTime,2)) + scaledTime;
@@ -185,16 +189,8 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	float x = H0*P1.x + H1*P2.x + H2*R1.x + H3*R2.x;
 	float y = H0*P1.y + H1*P2.y + H2*R1.y + H3*R2.y;
 	float z = H0*P1.z + H1*P2.z + H2*R1.z + H3*R2.z;
-	
-	std::cout << x << "," << y << "," << z << "," << std::endl;
-	//std::cout << "Next point: " << nextPoint << std::endl;
-	//std::cout << "Next point time: " << controlPoints[nextPoint].time << std::endl;
-	//std::cout << "Current time: " << time << std::endl;
-	//std::cout << "Scaled time: " << scaledTime << std::endl;
-	return Point(x,y,z);
-	
-	// ** End of New Code ** //
 
+	return Point(x,y,z);
 
 }
 
