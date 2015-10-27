@@ -245,14 +245,3 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	return Point(x,y,z);
 }
 
-
-
-
-
-
-
-
-
-
-
-
