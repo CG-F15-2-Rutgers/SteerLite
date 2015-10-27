@@ -127,9 +127,21 @@ namespace SteerLib
              *  DO NOT MODIFY polygon1.xml
              */
             static bool intersect(float& return_penetration_depth, Util::Vector& return_penetration_vector, const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB);
-
+			
+			
         private:
+			// Basic Description in .cpp. Move it to here soon
 
+			Util::Vector Support(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const Util::Vector& d);
+
+			Util::Point getFurthestPointinDirection(const std::vector<Util::Vector>& _shapeA, const Util::Vector& d);
+
+			bool hasOrigin(std::vector<Util::Vector>& simplex, Util::Vector& d);
+
+			bool GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB);
+
+			Util::Vector getNormal(const Util::Vector& A, const Util::Vector& B, const Util::Vector& C);
+			
     }; // class GJK_EPA
 
 } // namespace SteerLib
