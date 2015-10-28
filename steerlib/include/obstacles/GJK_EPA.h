@@ -132,17 +132,17 @@ namespace SteerLib
         private:
 			// Basic Description in .cpp. Move it to here soon
 
-			Util::Vector Support(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const Util::Vector& d);
+			static Util::Vector Support(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, const Util::Vector& d);
 
-			Util::Point getFurthestPointinDirection(const std::vector<Util::Vector>& _shapeA, const Util::Vector& d);
+			static Util::Point getFurthestPointinDirection(const std::vector<Util::Vector>& _shapeA, const Util::Vector& d);
 
-			bool hasOrigin(std::vector<Util::Vector>& simplex, Util::Vector& d);
+			static bool hasOrigin(std::vector<Util::Vector>& simplex, Util::Vector& d);
 
-			bool GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB);
-
-			Util::Vector getNormal(const Util::Vector& A, const Util::Vector& B, const Util::Vector& C);
+			static bool GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, std::vector<Util::Vector>& simplex);
 
 			void EPA(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, const std::vector<Util::Vector>& simplex, float& return_penetration_depth, Util::Vector& return_penetration_vector);
+
+			static Util::Vector getNormal(const Util::Vector& A, const Util::Vector& B, const Util::Vector& C);
 			
     }; // class GJK_EPA
 

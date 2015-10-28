@@ -15,6 +15,7 @@ SteerLib::GJK_EPA::GJK_EPA()
 //Look at the GJK_EPA.h header file for documentation and instructions
 bool SteerLib::GJK_EPA::intersect(float& return_penetration_depth, Util::Vector& return_penetration_vector, const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB)
 {
+<<<<<<< HEAD
 /*
 intersect(Polygon A, Polygon B)
              *  {
@@ -30,7 +31,17 @@ intersect(Polygon A, Polygon B)
              *      }    
              *  }
 */
-
+	std::vector<Util::Vector> simplex;
+	bool is_colliding = GJK(_shapeA, _shapeB, simplex);
+	     if (is_colliding == true)
+	{
+		return true;
+	
+	}
+	else
+	{
+		return false;
+	}
 
 }
 
@@ -70,23 +81,49 @@ Util::Point SteerLib::GJK_EPA::getFurthestPointinDirection(const std::vector<Uti
 	 Util::Vector A = simplex[simplex.size() - 1];
 	 Util::Vector A0 = -A; //-A = {0,0,0} - A Going from A TO 0
 	 if (simplex.size() == 3)	// we deal with situation of choosing best line and finding it's normal 
-	 { // We know that the new point A is past origin so we can check AB and AC to see if they contain the origin
-	   // Order We call B and C doesn't matter
-		 Util::Vector B = simplex[0];
-		 Util::Vector C = simplex[1];
-		 Util::Vector AB = B - A;
-		 Util::Vector AC = C - A;
-	 } else 
+	 { // We know that the new point A is past origin so we can check AB and AC to see if their normal away from the inside of the simplex is in the direction of origin
+	   // Order We call B and C doesn't matter]
+
+		Util::Vector B = simplex[0];
+		Util::Vector C = simplex[1];
+
+		Util::Vector AB = B - A;
+		Util::Vector AC = C - A;
+
+		Util::Vector abNorm = getNormal(AC, AB, AB);
+		if (abNorm * A0 > 0) // Origin is out of the simplex and the normal points to it from AB
+		{
+			simplex.erase(simplex.begin() + 1); // Remove C
+			d = abNorm;
+		} else 
+		{
+			Util::Vector acNorm = getNormal(AB, AC, AC); // Origin is out of the simplex and the normal points to it from AC
+			if (acNorm * A0 > 0) 
+			{
+				simplex.erase(simplex.begin()); // Remove B
+				d = acNorm;
+			} else
+			{
+				// We know from prior steps that it is not outside 
+				return true;
+			}
+		}
+	 } else // This is a line segment now
 	 {
-		 abNorm = normalTowaa
+		 Util::Vector B = simplex[0];
+
+		 Util::Vector AB = B - A;
+
+		 Util::Vector abNorm = getNormal(AB,A0,AB);
+
+		 d = abNorm;
 	 }
 	 return false;
  }
 
- bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB)
+ bool SteerLib::GJK_EPA::GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB, std::vector<Util::Vector>& simplex)
 {
 	Util::Vector d(1, 0, 0);
-	std::vector<Util::Vector> simplex;
 	simplex.push_back(Support(_shapeA, _shapeB, d));
 
 	// Negates the vector
