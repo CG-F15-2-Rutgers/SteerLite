@@ -141,6 +141,8 @@ namespace SteerLib
 			bool GJK(const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB);
 
 			Util::Vector getNormal(const Util::Vector& A, const Util::Vector& B, const Util::Vector& C);
+
+			void EPA(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, const std::vector<Util::Vector>& simplex, float& return_penetration_depth, Util::Vector& return_penetration_vector);
 			
     }; // class GJK_EPA
 

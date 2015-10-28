@@ -15,7 +15,23 @@ SteerLib::GJK_EPA::GJK_EPA()
 //Look at the GJK_EPA.h header file for documentation and instructions
 bool SteerLib::GJK_EPA::intersect(float& return_penetration_depth, Util::Vector& return_penetration_vector, const std::vector<Util::Vector>& _shapeA, const std::vector<Util::Vector>& _shapeB)
 {
-    return false; // There is no collision
+/*
+intersect(Polygon A, Polygon B)
+             *  {
+             *      (Simplex, is_colliding) = GJK(A, B)
+             *      if ( is_colliding == true)
+             *      {
+             *          (penetration_depth, penetration_vector) = EPA(A, B, Simplex)
+             *          return (true, penetration_depth, penetration_vector)
+             *      }
+             *      else
+             *      {
+             *          return (false, 0, NULL)    
+             *      }    
+             *  }
+*/
+
+
 }
 
 // Gets some vector d and finds the furthest point of shape along that direction using projection method
@@ -97,3 +113,13 @@ Util::Point SteerLib::GJK_EPA::getFurthestPointinDirection(const std::vector<Uti
  {
 	 return B*(C*A) - A * (C * B); //ALMOST COMPLETE CHANCE I messed up
  }
+
+void SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& shapeA, const std::vector<Util::Vector>& shapeB, const std::vector<Util::Vector>& simplex, float& return_penetration_depth, Util::Vector& return_penetration_vector)
+{
+
+
+
+
+
+}
+
