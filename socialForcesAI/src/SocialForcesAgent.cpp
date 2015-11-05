@@ -237,7 +237,7 @@ std::pair<float, Util::Point> minimum_distance(Util::Point l1, Util::Point l2, U
 
 Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 {
-    std::cerr<<"<<<calcProximityForce>>> Implementation for calcProximityForce running...";
+    //std::cerr<<"<<<calcProximityForce>>> Implementation for calcProximityForce running...";
 
     Util::Vector ProximityForce = Util::Vector(0, 0, 0);
 	SteerLib::AgentInterface * tmp_agent;
@@ -256,7 +256,7 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 		{
 			tmp_agent = dynamic_cast<SteerLib::AgentInterface*>(*neighbor);
 			Util::Vector tmp_away_norm = normalize(_position - tmp_agent->position());
-			ProximityForce = ProximityForce + (tmp_away_norm * ( (_SocialForcesParams.sf_agent_a * exp( (this->radius() + tmp_agent->radius() ) - ( this->position() - tmp_agent->position() ).length() ) ) / _SocialForcesParams.sf_agent_b) * dt ) ;
+			ProximityForce = ProximityForce + (tmp_away_norm * ( (_SocialForcesParams.sf_agent_a * exp( (this->radius() + tmp_agent->radius() ) - ( this->position() - tmp_agent->position() ).length() ) ) / _SocialForcesParams.sf_agent_b) * dt) ;
 		}
 		else
 		{
@@ -270,7 +270,7 @@ Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 
 Vector SocialForcesAgent::calcGoalForce(Vector _goalDirection, float _dt)
 {
-    std::cerr<<"<<<calcGoalForce>>> Implementation for calcGoalForce() running... \n";
+   // std::cerr<<"<<<calcGoalForce>>> Implementation for calcGoalForce() running... \n";
     SteerLib::AgentGoalInfo goalInfo = _goalQueue.front();
 
     Util::Vector goalDirection;
@@ -295,7 +295,7 @@ Util::Vector SocialForcesAgent::calcRepulsionForce(float dt)
 
 Util::Vector SocialForcesAgent::calcAgentRepulsionForce(float dt)
 {
-    std::cerr<<"<<<calcAgentRepulsionForce>>> Implementation for calcAgentRepulsionForce running....\n";
+    //std::cerr<<"<<<calcAgentRepulsionForce>>> Implementation for calcAgentRepulsionForce running....\n";
 
    Util::Vector RepulsionForce = Util::Vector(0, 0, 0);
 	SteerLib::AgentInterface * tmp_agent;
@@ -337,7 +337,7 @@ Util::Vector SocialForcesAgent::calcWallRepulsionForce(float dt)
     Wall Repulsion Force:
     sum of Fiw (Force exerted on agent by wall w)
     */
-    std::cerr<<"<<<calcAgentRepulsionForce>>> Implementation for calcWallRepulsionForce running.... \n";
+    //std::cerr<<"<<<calcAgentRepulsionForce>>> Implementation for calcWallRepulsionForce running.... \n";
     Util::Vector wall_repulsion_force = Util::Vector(0,0,0);
 
     /* Wall_repulsion_force is a vector... initialize it at 0,0,0... */
