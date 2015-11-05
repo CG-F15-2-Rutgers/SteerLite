@@ -237,17 +237,49 @@ std::pair<float, Util::Point> minimum_distance(Util::Point l1, Util::Point l2, U
 
 Util::Vector SocialForcesAgent::calcProximityForce(float dt)
 {
-    std::cerr<<"<<<calcProximityForce>>> Please Implement my body\n";
+    std::cerr<<"<<<calcProximityForce>>> Implementation for calcProximityForce running...";
 
-    return Util::Vector(0,0,0);
+    Util::Vector ProximityForce = Util::Vector(0, 0, 0);
+	SteerLib::AgentInterface * tmp_agent;
+
+	std::set<SteerLib::SpatialDatabaseItemPtr> _neighbors;
+	gSpatialDatabase->getItemsInRange(_neighbors,
+		_position.x -(this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.x + (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.z - (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.z + (this->_radius + _SocialForcesParams.sf_query_radius),
+		(dynamic_cast<SteerLib::SpatialDatabaseItemPtr>(this)));
+
+	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbor = _neighbors.begin(); neighbor != _neighbors.end() ; neighbor++)
+	{
+		if ((*neighbor)->isAgent())
+		{
+			tmp_agent = dynamic_cast<SteerLib::AgentInterface*>(*neighbor);
+			Util::Vector tmp_away_norm = normalize(_position - tmp_agent->position());
+			ProximityForce = ProximityForce + (tmp_away_norm * ( (_SocialForcesParams.sf_agent_a * exp( (this->radius() + tmp_agent->radius() ) - ( this->position() - tmp_agent->position() ).length() ) ) / _SocialForcesParams.sf_agent_b) * dt ) ;
+		}
+		else
+		{
+			continue;
+		}
+	}
+
+    return ProximityForce;
 }
 
 
 Vector SocialForcesAgent::calcGoalForce(Vector _goalDirection, float _dt)
 {
-    std::cerr<<"<<<calcGoalForce>>> Please Implement my body\n";
+    std::cerr<<"<<<calcGoalForce>>> Implementation for calcGoalForce() running... \n";
+    SteerLib::AgentGoalInfo goalInfo = _goalQueue.front();
 
-    return Util::Vector(0,0,0);
+    Util::Vector goalDirection;
+
+    goalDirection = normalize(goalInfo.targetLocation - position());
+    Util::Vector prefForce = (((goalDirection * PREFERED_SPEED) - velocity()) / _dt);
+
+
+    return prefForce;
 }
 
 
@@ -263,17 +295,100 @@ Util::Vector SocialForcesAgent::calcRepulsionForce(float dt)
 
 Util::Vector SocialForcesAgent::calcAgentRepulsionForce(float dt)
 {
-    std::cerr<<"<<<calcAgentRepulsionForce>>> Please Implement my body\n";
+    std::cerr<<"<<<calcAgentRepulsionForce>>> Implementation for calcAgentRepulsionForce running....\n";
 
-    return Util::Vector(0,0,0);
+   Util::Vector RepulsionForce = Util::Vector(0, 0, 0);
+	SteerLib::AgentInterface * tmp_agent;
+
+	//A*e^(r-d) / B
+
+	std::set<SteerLib::SpatialDatabaseItemPtr> _neighbors;
+
+	gSpatialDatabase->getItemsInRange(_neighbors,
+		_position.x - (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.x + (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.z - (this->_radius + _SocialForcesParams.sf_query_radius),
+		_position.z + (this->_radius + _SocialForcesParams.sf_query_radius),
+		(dynamic_cast<SteerLib::SpatialDatabaseItemPtr>(this)));
+
+	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbor = _neighbors.begin(); neighbor != _neighbors.end(); neighbor++)
+	{
+		if ( (*neighbor)->isAgent() )
+		{
+			tmp_agent = dynamic_cast<SteerLib::AgentInterface*>(*neighbor);
+			if (id() != tmp_agent->id() && ((*neighbor)->computePenetration(this->position(), this->radius()) > .000001))
+			{
+				Util::Vector tmp_away_norm = normalize(_position - tmp_agent->position());
+				RepulsionForce = RepulsionForce + ( tmp_away_norm * tmp_agent->computePenetration(this->position(),this->radius()) * _SocialForcesParams.sf_agent_body_force * dt );
+			}
+		}
+		else
+		{
+			continue;
+		}
+	}
+        return RepulsionForce;
 }
 
 
 Util::Vector SocialForcesAgent::calcWallRepulsionForce(float dt)
 {
-    std::cerr<<"<<<calcWallRepulsionForce>>> Please Implement my body\n";
+    /*
+    Wall Repulsion Force:
+    sum of Fiw (Force exerted on agent by wall w)
+    */
+    std::cerr<<"<<<calcAgentRepulsionForce>>> Implementation for calcWallRepulsionForce running.... \n";
+    Util::Vector wall_repulsion_force = Util::Vector(0,0,0);
 
-    return Util::Vector(0,0,0);
+    /* Wall_repulsion_force is a vector... initialize it at 0,0,0... */
+
+
+	std::set<SteerLib::SpatialDatabaseItemPtr> _neighbors;
+		gSpatialDatabase->getItemsInRange(_neighbors,
+				_position.x-(this->_radius + _SocialForcesParams.sf_query_radius),
+				_position.x+(this->_radius + _SocialForcesParams.sf_query_radius),
+				_position.z-(this->_radius + _SocialForcesParams.sf_query_radius),
+				_position.z+(this->_radius + _SocialForcesParams.sf_query_radius),
+				dynamic_cast<SteerLib::SpatialDatabaseItemPtr>(this));
+
+	SteerLib::ObstacleInterface * tmp_ob;
+
+	/* The virtual interfarence for any non-agent object in the environment. Inherits SpatialDatabaseItem */
+
+
+	for (std::set<SteerLib::SpatialDatabaseItemPtr>::iterator neighbour = _neighbors.begin();  neighbour != _neighbors.end();  neighbour++)
+	// for (std::set<SteerLib::ObstacleInterface * >::iterator tmp_o = _neighbors.begin();  tmp_o != _neighbors.end();  tmp_o++)
+	{
+		if ( !(*neighbour)->isAgent() ) //If the neighbor is not an agent
+		{
+			tmp_ob = dynamic_cast<SteerLib::ObstacleInterface *>(*neighbour);
+
+			/* ObstacleInterface: Virtual interface for any non-agent object in the environment */
+			/* If the object is not an agent, then assign it as a temporary obstacle */
+
+		}
+		else /* If the neighbor is an agent, then continue. */
+ 		{
+			continue;
+		}
+		if ( tmp_ob->computePenetration(this->position(), this->radius()) > 0.000001 )
+		/* If the agent is penetrating the obstacle */
+		{
+
+        Util::Vector wall_normal = calcWallNormal( tmp_ob); /* Calculate the normal force coming out of the temporary obstacle */
+
+        std::pair<Util::Point,Util::Point> line = calcWallPointsFromNormal(tmp_ob,wall_normal);
+
+        std::pair<float,Util::Point> min_stuff = minimum_distance(line.first,line.second,position());
+
+        wall_repulsion_force = wall_normal * (min_stuff.first + radius()) * _SocialForcesParams.sf_body_force;
+
+
+		}
+
+	}
+	return wall_repulsion_force;
+
 }
 
 
