@@ -26,7 +26,6 @@ namespace SteerLib
 	parent : the pointer to the parent AStarPlannerNode, so that retracing the path is possible.
 	@operators
 	The greater than, less than and equals operator have been overloaded. This means that objects of this class can be used with these operators. Change the functionality of the operators depending upon your implementation
-
 	*/
 	class STEERLIB_API AStarPlannerNode {
 	public:
@@ -105,14 +104,14 @@ namespace SteerLib
 		SteerLib::GridDatabase2D * gSpatialDatabase;
 
 		// Finds Heuristics for A*
-		void reconstructPath(AStarPlannerNode& goal, std::vector<Util::Point>& agent_path);
+		void reconstructPath(AStarPlannerNode* goal, std::vector<Util::Point>& agent_path);
 		double heuristic(const Util::Point CurrentNode, const Util::Point Goal);
 		double findCost(int currentiD, int neighborID); // Used to check whther you should have straight line or diagonal cost
-		std::vector<AStarPlannerNode> findNeighbors(AStarPlannerNode currentNode, AStarPlannerNode goal);
-		int findNodeInVector(std::vector<AStarPlannerNode> open, AStarPlannerNode target); // used to find if an item is in open list, if it is then return index it is at, -1 otherwise
-		bool testForNodeInVector(std::vector<AStarPlannerNode> closed, AStarPlannerNode target); // Used to check if a node is in the closed list
-		AStarPlannerNode findNodeToEvaluate(std::vector<AStarPlannerNode> open, int& index); // Used to check for most suitable node to evaluate and return inex of its location
-
+		std::vector<AStarPlannerNode*> findNeighbors(AStarPlannerNode* currentNode, AStarPlannerNode* goal);
+		int findNodeInVector(std::vector<AStarPlannerNode*> open, AStarPlannerNode* target); // used to find if an item is in open list, if it is then return index it is at, -1 otherwise
+		bool testForNodeInVector(std::vector<AStarPlannerNode*> closed, AStarPlannerNode* target); // Used to check if a node is in the closed list
+		AStarPlannerNode* findNodeToEvaluate(std::vector<AStarPlannerNode*> open, int& index); // Used to check for most suitable node to evaluate and return inex of its location
+		void vectorMemoryCleanup(std::vector<AStarPlannerNode*> _vector);
 	};
 
 

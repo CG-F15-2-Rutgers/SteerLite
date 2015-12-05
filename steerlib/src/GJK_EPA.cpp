@@ -55,11 +55,12 @@ Util::Point SteerLib::GJK_EPA::getFurthestPointinDirection(const std::vector<Uti
 	for (std::vector<Util::Vector>::const_iterator it = _shape.begin(); it != _shape.end(); ++it)
 	{
 		//compute the dot product, whhich gets the projection of the shape vector onto 
-		float magnitude = (*it * d);
+		float magnitude = ((*it) * d);
+
 		if (magnitude > greatestProjectionMagnitude)
 		{
 			greatestProjectionMagnitude = magnitude;
-			furthestPoint = Util::Point();
+			furthestPoint = Util::Point((*it).x, (*it).y, (*it).z);
 		}
 	}
 	return furthestPoint;
@@ -133,7 +134,7 @@ Util::Point SteerLib::GJK_EPA::getFurthestPointinDirection(const std::vector<Uti
 	{
 		simplex.push_back(Support(_shapeA, _shapeB, d));
 		//simplex.add
-
+	
 		if ((simplex[simplex.size()-1]*d <= 0.0f)) // vector did not pass the origin, it is impossible for the origin to be in the mink. diff.
 		{
 			return false;
@@ -155,7 +156,8 @@ void SteerLib::GJK_EPA::EPA(const std::vector<Util::Vector>& shapeA, const std::
 {
 
 
-
+	return_penetration_depth = 0.0f;
+	return_penetration_vector = Util::Vector();
 
 
 }
