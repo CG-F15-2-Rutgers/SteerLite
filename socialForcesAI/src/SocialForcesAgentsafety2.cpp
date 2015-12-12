@@ -206,7 +206,6 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 			agentPath.erase(agentPath.begin());
 		}
 		_goalQueue.push(finalGoal);
-		this->_prefVelocity = Util::Vector();
 		runLongTermPlanning();
 	} else if (testcaseName.find("bottleneck-squeeze") != std::string::npos) { //DONE
 		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
@@ -281,7 +280,6 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 				runLongTermPlanning();
 			}
 		}
-
 		else  {
 			if (position().x >= 20.0f && position().x < 30.0f)
 			{
@@ -351,6 +349,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 				runLongTermPlanning();
 			}
 		}
+
 	}
 	else if (testcaseName.find("wall-squeeze") != std::string::npos) { //DONE
 		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
@@ -376,8 +375,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 			_goalQueue.push(finalGoal);
 			runLongTermPlanning();
 		}
-	} 
-	else if (testcaseName.find("doorway-two-way") != std::string::npos) { //DONE
+	} else if (testcaseName.find("doorway-two-way") != std::string::npos) { //DONE
 		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
 		_goalQueue.pop();
 
@@ -401,8 +399,8 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 			_goalQueue.push(finalGoal);
 			runLongTermPlanning();
 		}
-	} 
-	else if (testcaseName.find("double-squeeze") != std::string::npos) { //DONE
+	} else if (testcaseName.find("double-squeeze") != std::string::npos) { //DONE
+		
 		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
 		_goalQueue.pop();
 
@@ -436,6 +434,23 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 				_goalQueue.push(finalGoal);
 				runLongTermPlanning();
 			}
+		}
+	}
+	else if (testcaseName.find("crowd_crossing") != std::string::npos) { //DONE
+		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
+		_goalQueue.pop();
+		if ( this->position().z > -10  && this->position().x < -9) {
+			SteerLib::AgentGoalInfo goal;
+			goal.targetLocation = Util::Point(this->position().x - 9, 0, this->position().z);
+			_goalQueue.push(goal);
+			_goalQueue.push(finalGoal);
+			runLongTermPlanning();
+		}
+		else if (false) {
+		}
+		else {
+			_goalQueue.push(finalGoal);
+			runLongTermPlanning();
 		}
 	}
 	else if (testcaseName.find("plane_egress") != std::string::npos) { //DONE
@@ -1219,10 +1234,11 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 
 
 	}
-	else if (testcaseName.find("plane_ingress") != std::string::npos) {
+	
+	else if (testcaseName.find("plane_ingress") != std::string::npos){
 		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
 		_goalQueue.pop();
-
+		
 		if (finalGoal.targetLocation.z >= 0) {
 			if (finalGoal.targetLocation.x >= -2.5) {
 				SteerLib::AgentGoalInfo goal;
@@ -1293,7 +1309,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 				runLongTermPlanning();
 			}
 		}
-		else {
+		else  {
 			if (finalGoal.targetLocation.x >= -2.5) {
 				SteerLib::AgentGoalInfo goal;
 				goal.targetLocation = Util::Point(30, 0, 0);
@@ -1340,7 +1356,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 				_goalQueue.push(goal);
 				goal.targetLocation = Util::Point(2, 0, -38);
 				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, -38);
+				goal.targetLocation = Util::Point(-3, 0,-38);
 				_goalQueue.push(goal);
 				goal.targetLocation = Util::Point(-3, 0, -34);
 				_goalQueue.push(goal);
@@ -1364,6 +1380,7 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 		}
 
 	}
+
 	else if (testcaseName.find("search-1") != std::string::npos) {
 		AStarPlanner planner;
 		std::vector<Util::Point> agentPath;
@@ -1381,147 +1398,6 @@ void SocialForcesAgent::reset(const SteerLib::AgentInitialConditions & initialCo
 		}
 		_goalQueue.push(finalGoal);
 	}
-	
-	else if (testcaseName.find("a5-test") != std::string::npos) { //DONE
-		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
-		_goalQueue.pop();
-
-		if ((position().z >= 40) && (position().z <= 60)) {
-			if ((position().x >= -60) && (position().x <= -50)) {
-				SteerLib::AgentGoalInfo goal;
-				goal.targetLocation = Util::Point(-37, 0, 30);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-37, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 15);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 15);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(57, 0, 0);
-				_goalQueue.push(goal);
-
-				_goalQueue.push(finalGoal);
-				runLongTermPlanning();
-			}
-			else if ((position().x >= -50) && (position().x <= -40)) {
-				SteerLib::AgentGoalInfo goal;
-				goal.targetLocation = Util::Point(-37, 0, 30);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-37, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 15);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 15);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(50, 0, 0);
-				_goalQueue.push(goal);
-
-				_goalQueue.push(finalGoal);
-				runLongTermPlanning();
-			}
-		}
-		else if ((position().z >-71) && (position().z <30)) {
-			if ((position().x >= -50) && (position().x <= -40)) {
-				SteerLib::AgentGoalInfo goal;
-				goal.targetLocation = Util::Point(-37, 0, -30);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-37, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, -17);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, -17);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(41, 0, 0);
-				_goalQueue.push(goal);
-
-				_goalQueue.push(finalGoal);
-				runLongTermPlanning();
-			}
-
-			else if ((position().x >= -40) && (position().x <= -30)) {
-				SteerLib::AgentGoalInfo goal;
-				goal.targetLocation = Util::Point(-37, 0, -30);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-37, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, -17);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, -17);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(57, 0, 0);
-				_goalQueue.push(goal);
-
-				_goalQueue.push(finalGoal);
-				runLongTermPlanning();
-			}
-
-			else if ((position().x >= -85) && (position().x <= -75)) {
-				SteerLib::AgentGoalInfo goal;
-				goal.targetLocation = Util::Point(-60, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, -17);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, -17);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(49, 0, 0);
-				_goalQueue.push(goal);
-
-				_goalQueue.push(finalGoal);
-				runLongTermPlanning();
-			}
-
-			else if ((position().x >= -95) && (position().x <= -85)) {
-				SteerLib::AgentGoalInfo goal;
-				goal.targetLocation = Util::Point(-60, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(-3, 0, 15);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 15);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(10, 0, 0);
-				_goalQueue.push(goal);
-				goal.targetLocation = Util::Point(41, 0, 0);
-				_goalQueue.push(goal);
-
-				_goalQueue.push(finalGoal);
-				runLongTermPlanning();
-			}
-
-		}
-
-
-	}
-	else if (testcaseName.find("crowd_crossing") != std::string::npos) { //DONE
-		SteerLib::AgentGoalInfo finalGoal = _goalQueue.front();
-		_goalQueue.pop();
-		
-			_goalQueue.push(finalGoal);
-			runLongTermPlanning();
-		
-	}
-
 	else {
 //s		runLongTermPlanning();
 		AStarPlanner planner;

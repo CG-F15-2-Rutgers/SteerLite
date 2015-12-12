@@ -64,6 +64,10 @@ class SocialForcesAgent : public SteerLib::AgentInterface
         float computePenetration(const Util::Point & p, float radius) { return Util::computeCircleCirclePenetration2D( _position, _radius, p, radius); }
         //@}
 
+
+		//float GOAL_MULT = 1000.0;
+
+
         // bool collidesAtTimeWith(const Util::Point & p1, const Util::Vector & rightSide, float otherAgentRadius, float timeStamp, float footX, float footZ);
         void insertAgentNeighbor(const SteerLib::AgentInterface * agent, float &rangeSq) {throw Util::GenericException("clearGoals() not implemented yet for SimpleAgent");}
         // bool compareDist(SteerLib::AgentInterface * a1, SteerLib::AgentInterface * a2 );
@@ -88,7 +92,6 @@ class SocialForcesAgent : public SteerLib::AgentInterface
         Util::Vector _newVelocity;
         Util::Color _color;
         float _radius;
-
         std::queue<SteerLib::AgentGoalInfo> _goalQueue;
 
         // Stuff specific to RVO

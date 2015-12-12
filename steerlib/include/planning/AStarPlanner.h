@@ -111,7 +111,7 @@ namespace SteerLib
 		int findNodeInVector(std::vector<AStarPlannerNode*> open, AStarPlannerNode* target); // used to find if an item is in open list, if it is then return index it is at, -1 otherwise
 		bool testForNodeInVector(std::vector<AStarPlannerNode*> closed, AStarPlannerNode* target); // Used to check if a node is in the closed list
 		AStarPlannerNode* findNodeToEvaluate(std::vector<AStarPlannerNode*> open, int& index); // Used to check for most suitable node to evaluate and return inex of its location
-		void vectorMemoryCleanup(std::vector<AStarPlannerNode*> _vector);
+		void vectorMemoryCleanup(std::vector<AStarPlannerNode*>& _vector);
 	};
 
 

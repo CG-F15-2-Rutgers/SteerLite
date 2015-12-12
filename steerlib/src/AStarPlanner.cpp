@@ -55,12 +55,14 @@ namespace SteerLib
 			{
 				int index = gSpatialDatabase->getCellIndexFromGridCoords(i, j);
 				traversal_cost += gSpatialDatabase->getTraversalCost(index);
+				//std::cout << traversal_cost << std::endl;
 
 			}
 		}
 
 		if (traversal_cost > COLLISION_COST)
 			return false;
+		//std::cout << "TRUE";
 		return true;
 	}
 
@@ -86,6 +88,7 @@ namespace SteerLib
 	*/
 	bool AStarPlanner::computePath(std::vector<Util::Point>& agent_path, Util::Point start, Util::Point goal, SteerLib::GridDatabase2D * _gSpatialDatabase, bool append_to_path)
 	{
+		
 		gSpatialDatabase = _gSpatialDatabase;
 
 		double infinity = std::numeric_limits<double>::infinity();
@@ -98,8 +101,8 @@ namespace SteerLib
 
 		AStarPlannerNode* startNode = new AStarPlannerNode(start, 0, heuristic(start, goal), nullptr);
 		AStarPlannerNode* goalNode = new AStarPlannerNode(goal, infinity, infinity, nullptr);
-
-		std::cout << "Start Node Point :" << startNode->point << std::endl;
+		
+		//std::cout << "Start Node Point :" << startNode->point << std::endl;
 
 		std::vector<AStarPlannerNode*> open;					// Holds node that have been evaluated
 		std::vector<AStarPlannerNode*> closed;				// Holds nodes that need to be evaluated
@@ -117,7 +120,7 @@ namespace SteerLib
 			currentNode = findNodeToEvaluate(open, index);
 			if (currentNode->point == goalNode->point) {
 				reconstructPath(currentNode, agent_path);
-				std::cout << "FOUND THE GOAL " << currentNode->point << "	NODES DISCOVERED " << nodesDiscovered << "	PATH LENGTH " << agent_path.size()<< std::endl;
+				//std::cout << "FOUND THE GOAL " << currentNode->point << "	NODES DISCOVERED " << nodesDiscovered << "	PATH LENGTH " << agent_path.size()<< std::endl;
 				vectorMemoryCleanup(open);
 				vectorMemoryCleanup(closed);
 				return true;
@@ -128,7 +131,7 @@ namespace SteerLib
 
 			//std::cout << "Finding Neighbors" << std::endl;
 			std::vector<AStarPlannerNode*> neighbors = findNeighbors(currentNode, goalNode);  //// NEIGHBOR MAY NOT CLOSE AND DESTROY ALL ITEMS IN LIST
-			//std::cout << "Checking all neighbors" << std::endl;
+			//std::cout << "Checking all neighbors" << neighbors.size()<< std::endl;
 			for (std::vector<AStarPlannerNode*>::iterator iter = neighbors.begin(); iter != neighbors.end(); ++iter) {
 
 				AStarPlannerNode* neighbor = (*iter);
@@ -159,10 +162,13 @@ namespace SteerLib
 					//std::cout << "Node has not been previously discovered" << std::endl;
 					open.push_back(neighbor);
 					nodesDiscovered++;
+					//std::cout << nodesDiscovered << std::endl;
 				}
 
 			}
 		}
+		vectorMemoryCleanup(open);
+		vectorMemoryCleanup(closed);
 		return false;
 	}
 
@@ -243,6 +249,7 @@ namespace SteerLib
 		// This loop iterates over defined range of nodes
 		for (int i = x_range_min; i <= x_range_max; ++i) {
 			for (int j = z_range_min; j <= z_range_max; ++j) {
+				//std::cout << canBeTraversed(gSpatialDatabase->getCellIndexFromGridCoords(i, j)) << std::endl;
 				if (!((i == x) && (j == z)) && canBeTraversed(gSpatialDatabase->getCellIndexFromGridCoords(i, j))) { // Checks that we do not reinclude our current node and that all nodes we add can be traversed
 
 
@@ -327,7 +334,7 @@ namespace SteerLib
 		return temp;
 	}
 
-	void AStarPlanner::vectorMemoryCleanup(std::vector<AStarPlannerNode*> _vector)
+	void AStarPlanner::vectorMemoryCleanup(std::vector<AStarPlannerNode*>& _vector)
 	{
 		for (std::vector<AStarPlannerNode*>::iterator it = _vector.begin(); it != _vector.end(); ++it) {
 			delete (*it);

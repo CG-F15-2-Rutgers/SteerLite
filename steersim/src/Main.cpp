@@ -42,8 +42,10 @@ int main(int argc, char **argv)
 
 		SimulationOptions simulationOptions;
 		initializeOptionsFromCommandLine( argc, argv, simulationOptions );
-
-
+		ofstream ofs;
+		ofs.open("testcasename.txt", ios::out|ios::trunc);
+		ofs<< argv[2];
+		ofs.close();
 		//
 		// after initializing from command line,
 		// the simulationOptions data structure is properly initialized
